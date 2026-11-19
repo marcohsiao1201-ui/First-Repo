@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>簡易加減計算機</title>
+<title>簡易四則計算機</title>
 <style>
   body { font-family: system-ui, "Noto Sans TC", sans-serif; background:#f0f2f5; display:flex; justify-content:center; align-items:center; min-height:100vh; margin:0; }
   .card { background:#fff; padding:2rem; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,.1); width:320px; }
@@ -16,11 +16,13 @@
 </head>
 <body>
 <div class="card">
-  <h1>簡易加減計算機</h1>
+  <h1>簡易四則計算機</h1>
   <input id="a" type="number" placeholder="第一個數字" step="any">
   <select id="op">
     <option value="+">＋ 加</option>
     <option value="-">－ 減</option>
+    <option value="*">× 乘</option>
+    <option value="/">÷ 除</option>
   </select>
   <input id="b" type="number" placeholder="第二個數字" step="any">
   <button id="calc">計算</button>
@@ -31,8 +33,10 @@
   function calculate() {
     const a = parseFloat($("a").value), b = parseFloat($("b").value), op = $("op").value;
     if (isNaN(a) || isNaN(b)) { $("result").textContent = "請輸入兩個數字"; return; }
-    const r = op === "+" ? a + b : a - b;
-    $("result").textContent = `${a} ${op} ${b} = ${Math.round(r * 1e10) / 1e10}`;
+    if (op === "/" && b === 0) { $("result").textContent = "除數不能為 0"; return; }
+    const r = op === "+" ? a + b : op === "-" ? a - b : op === "*" ? a * b : a / b;
+    const sym = { "+": "+", "-": "-", "*": "×", "/": "÷" }[op];
+    $("result").textContent = `${a} ${sym} ${b} = ${Math.round(r * 1e10) / 1e10}`;
   }
   $("calc").addEventListener("click", calculate);
   document.addEventListener("keydown", e => { if (e.key === "Enter") calculate(); });
